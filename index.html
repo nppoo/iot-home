@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home Dashboard</title>
+</head>
+<body>
+    <h1>Smart Home Dashboard</h1>
+    <h2>Device Status</h2>
+    <ul>
+        {% for device, info in devices.items() %}
+            <li>{{ device.capitalize() }}: 
+                {% if 'status' in info %}
+                    {{ info.status }}
+                    <form action="/update_device" method="post" style="display:inline;">
+                        <input type="hidden" name="device" value="{{ device }}">
+                        <input type="hidden" name="action" value="toggle">
+                        <button type="submit">Toggle</button>
+                    </form>
+                {% elif 'temperature' in info %}
+                    {{ info.temperature }}°C
+                {% elif 'level' in info %}
+                    {{ info.level }}%
+                {% elif 'message' in info %}
+                    {{ info.message }}
+                    <form action="/update_device" method="post" style="display:inline;">
+                        <input type="hidden" name="device" value="{{ device }}">
+                        <input type="hidden" name="action" value="message">
+                        <input type="text" name="message" placeholder="New message">
+                        <button type="submit">Set Message</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <h2>Alerts</h2>
+    <ul>
+        {% for alert in alerts %}
+            <li>{{ alert }}</li>
+        {% endfor %}
+    </ul>
+<h2>Control AC Temperature</h2>
+    <form action="/update_device" method="post">
+        <label for="temperature">Set AC Temperature (in Celsius):</label>
+        <input type="number" id="temperature" name="temperature" min="16" max="30" required>
+        <input type="hidden" name="device" value="ac">
+        <input type="hidden" name="action" value="ac_temperature">
+        <button type="submit">Set Temperature</button>
+    </form>
+
+</body>
+</html>
